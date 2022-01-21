@@ -20,15 +20,16 @@
 
 -emqx_plugin(?MODULE).
 
--export([ start/2
-        , stop/1
-        ]).
+-export([ init/1
+  , check/2
+  , description/0
+]).
 
-start(_StartType, _StartArgs) ->
-    {ok, Sup} = emqx_plugin_template_sup:start_link(),
-    emqx_plugin_template:load(application:get_all_env()),
-    {ok, Sup}.
+init(Opts) -> {ok, Opts}.
 
-stop(_State) ->
-    emqx_plugin_template:unload().
+check(_ClientInfo = #{clientid := ClientId, username := Username, password := Password}, _State) ->
+  io:format("Auth Demo: clientId=~p, username=~p, password=~p~n", [ClientId, Username, Password]),
+  ok.
+
+description() -> "Auth Demo Module".
 
